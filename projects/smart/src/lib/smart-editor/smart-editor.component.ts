@@ -14,7 +14,7 @@ import {NzUploadChangeParam, NzUploadComponent} from "ng-zorro-antd/upload";
 import {NzTableModule} from "ng-zorro-antd/table";
 import {CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
 import {NzInputDirective, NzInputGroupComponent, NzTextareaCountComponent} from "ng-zorro-antd/input";
-import {NzButtonComponent} from "ng-zorro-antd/button";
+import {NzButtonComponent, NzButtonGroupComponent} from "ng-zorro-antd/button";
 import {NzColorPickerModule} from "ng-zorro-antd/color-picker";
 import {NzDatePickerComponent} from "ng-zorro-antd/date-picker";
 import {NzInputNumberComponent} from "ng-zorro-antd/input-number";
@@ -25,7 +25,20 @@ import {NzTimePickerComponent} from "ng-zorro-antd/time-picker";
 import {NzTreeSelectComponent} from "ng-zorro-antd/tree-select";
 import {NzIconDirective} from "ng-zorro-antd/icon";
 import {NzSpaceModule} from "ng-zorro-antd/space";
+import {
+    NzAutocompleteComponent,
+    NzAutocompleteModule,
+    NzAutocompleteTriggerDirective
+} from "ng-zorro-antd/auto-complete";
+import {NzCheckboxComponent} from "ng-zorro-antd/checkbox";
+import {NzRadioGroupComponent, NzRadioModule} from "ng-zorro-antd/radio";
+import {NzRateComponent} from "ng-zorro-antd/rate";
 
+
+export interface SmartAutoOption {
+    label: string
+    value: any
+}
 
 export interface SmartSelectOption {
     label: string
@@ -62,6 +75,7 @@ export interface SmartField {
     array?: boolean //数组
     children?: SmartField[]
 
+
     required?: boolean //必须
     max?: number
     min?: number
@@ -69,6 +83,7 @@ export interface SmartField {
 
     multiple?: boolean //多选
 
+    auto?: SmartAutoOption[] //自动完成
     options?: SmartSelectOption[] //select参数
     tree?: SmartTreeOption[] //树形选择
 
@@ -96,12 +111,14 @@ function getDefault(field: SmartField): any {
             return 0
         case 'slider':
             return 0
+        case 'radio':
         case 'select':
             return field.options?.[0]?.value
         case 'tags':
             return []
         case 'color':
             return ''
+        case 'checkbox':
         case 'switch':
             return false
         case 'textarea':
@@ -138,6 +155,7 @@ function getDefault(field: SmartField): any {
         NzFormModule,
         NzTableModule,
         CdkDrag,
+        CdkDropList,
         NzInputDirective,
         NzButtonComponent,
         NzColorPickerModule,
@@ -154,7 +172,11 @@ function getDefault(field: SmartField): any {
         CdkDragHandle,
         NzIconDirective,
         NzSpaceModule,
-        CdkDropList,
+        NzAutocompleteModule,
+        NzCheckboxComponent,
+        NzRadioModule,
+        NzButtonGroupComponent,
+        NzRateComponent,
     ],
     templateUrl: './smart-editor.component.html',
     styleUrl: './smart-editor.component.scss',
@@ -172,7 +194,9 @@ export class SmartEditorComponent implements OnInit {
         console.log("[SmartEditor] set fields", fs)
         if (fs && fs.length) {
             this._fields = fs
-            this.group = this.build(this._fields, this._values)
+            setTimeout(()=>{
+                this.group = this.build(this._fields, this._values)
+            })
         }
     }
 
@@ -185,7 +209,9 @@ export class SmartEditorComponent implements OnInit {
         console.log("[SmartEditor] set values", values)
         this._values = values
         if (this._fields && this._fields.length) {
-            this.group = this.build(this._fields, this._values)
+            setTimeout(()=> {
+                this.group = this.build(this._fields, this._values)
+            })
         }
     }
 

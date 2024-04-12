@@ -16,8 +16,9 @@
             <input nz-input [formControl]="control"
                    [minlength]="field.min || 0"
                    [maxlength]="field.max || 255"
-                   [placeholder]="field.placeholder || ''"/>
-
+                   [placeholder]="field.placeholder || ''"
+                   [nzAutocomplete]="auto"/>
+            <nz-autocomplete [nzDataSource]="field.auth" #auto></nz-autocomplete>
         }
         @case ('password') {
             <!--密码-->
@@ -42,10 +43,10 @@
                        [nzStep]="field.step"></nz-slider>
         }
         @case ('radio') {
-            <!--单选 有import Bug，先不支持
+            <!--单选 有import Bug，先不支持-->
             <nz-radio-group [formControl]="control" nzButtonStyle="solid">
                 <label nz-radio-button *ngFor="let o of field.options" [nzValue]="o.value">{{ o.label }}</label>
-            </nz-radio-group>-->
+            </nz-radio-group>
         }
         @case ('select') {
             <!--选项-->
@@ -76,6 +77,10 @@
             <!--开关-->
             <nz-switch [formControl]="control"></nz-switch>
         }
+        @case ('checkbox') {
+            <!--开关-->
+            <label nz-checkbox [formControl]="control"></label>
+        }
         @case ('textarea') {
             <!--多行文本-->
             <nz-textarea-count [nzMaxCharacterCount]="field.max || 255">
@@ -86,6 +91,10 @@
             <!--进度条-->
             <nz-slider [formControl]="control"
                        [nzMax]="field.max" [nzMin]="field.min" [nzStep]="field.step"></nz-slider>
+        }
+        @case ('rate'){
+            <!--评分-->
+            <nz-rate [formControl]="control"></nz-rate>
         }
         @case ('datetime') {
             <!--日期和时间-->
@@ -200,7 +209,7 @@
             <span>不支持的控件类型：{{ field.type }}</span>
         }
     }
-    {{field.tips}}
+    {{ field.tips }}
 </ng-template>
 
 <!-- 表单组模板 -->

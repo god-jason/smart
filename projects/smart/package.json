@@ -1,14 +1,13 @@
 {
     "name": "iot-master-smart",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "peerDependencies": {
-        "@angular/common": "^17.0.0",
-        "@angular/core": "^17.0.0",
-        "@angular/forms": "^17.0.0",
-        "@angular/router": "^17.0.0",
-        "ng-antd-color-picker": "^1.1.0",
-        "ng-zorro-antd": "^17.1.0",
-        "rxjs": "~7.8.0",
+        "@angular/common": "^17.2.1",
+        "@angular/core": "^17.2.1",
+        "@angular/forms": "^17.2.1",
+        "@angular/router": "^17.2.1",
+        "ng-zorro-antd": "^17.3.0",
+        "rxjs": "~7.8.1",
         "zone.js": "~0.14.2"
     },
     "dependencies": {
@@ -17,6 +16,5 @@
     "sideEffects": false,
     "repository": {
         "url": "https://github.com/iot-master-contrib/smart"
-    },
-    "homepage": "https://github.com/iot-master-contrib/smart"
+    }
 }
