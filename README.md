@@ -1,6 +1,10 @@
-# smart
+# iot-master-smart
 
 物联大师及相关项目的UI基础库
+
+```
+npm install iot-master-smart
+```
 
 ## 智能表单
 
