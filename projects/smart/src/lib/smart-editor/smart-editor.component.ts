@@ -25,13 +25,9 @@ import {NzTimePickerComponent} from "ng-zorro-antd/time-picker";
 import {NzTreeSelectComponent} from "ng-zorro-antd/tree-select";
 import {NzIconDirective} from "ng-zorro-antd/icon";
 import {NzSpaceModule} from "ng-zorro-antd/space";
-import {
-    NzAutocompleteComponent,
-    NzAutocompleteModule,
-    NzAutocompleteTriggerDirective
-} from "ng-zorro-antd/auto-complete";
+import {NzAutocompleteModule} from "ng-zorro-antd/auto-complete";
 import {NzCheckboxComponent} from "ng-zorro-antd/checkbox";
-import {NzRadioGroupComponent, NzRadioModule} from "ng-zorro-antd/radio";
+import {NzRadioModule} from "ng-zorro-antd/radio";
 import {NzRateComponent} from "ng-zorro-antd/rate";
 
 
@@ -182,7 +178,7 @@ function getDefault(field: SmartField): any {
     styleUrl: './smart-editor.component.scss',
 })
 export class SmartEditorComponent implements OnInit {
-    group!: FormGroup
+    group: FormGroup = new FormGroup({})
 
     _fields: SmartField[] = []
     _values: any = {}
@@ -193,10 +189,10 @@ export class SmartEditorComponent implements OnInit {
     @Input() set fields(fs: SmartField[]) {
         console.log("[SmartEditor] set fields", fs)
         if (fs && fs.length) {
-            this._fields = fs
-            setTimeout(()=>{
+            setTimeout(() => {
+                this._fields = fs
                 this.group = this.build(this._fields, this._values)
-            })
+            },50)
         }
     }
 
@@ -209,9 +205,9 @@ export class SmartEditorComponent implements OnInit {
         console.log("[SmartEditor] set values", values)
         this._values = values
         if (this._fields && this._fields.length) {
-            setTimeout(()=> {
+            setTimeout(() => {
                 this.group = this.build(this._fields, this._values)
-            })
+            }, 50)
         }
     }
 

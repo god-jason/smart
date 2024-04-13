@@ -45,7 +45,9 @@
         @case ('radio') {
             <!--单选 有import Bug，先不支持-->
             <nz-radio-group [formControl]="control" nzButtonStyle="solid">
-                <label nz-radio-button *ngFor="let o of field.options" [nzValue]="o.value">{{ o.label }}</label>
+                <label nz-radio-button *ngFor="let o of field.options"
+                       [nzValue]="o.value"
+                       [nzDisabled]="o.disabled">{{ o.label }}</label>
             </nz-radio-group>
         }
         @case ('select') {
@@ -92,7 +94,7 @@
             <nz-slider [formControl]="control"
                        [nzMax]="field.max" [nzMin]="field.min" [nzStep]="field.step"></nz-slider>
         }
-        @case ('rate'){
+        @case ('rate') {
             <!--评分-->
             <nz-rate [formControl]="control"></nz-rate>
         }
