@@ -1,6 +1,6 @@
 {
     "name": "iot-master-smart",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "peerDependencies": {
         "@angular/common": "^17.2.1",
         "@angular/core": "^17.2.1",
