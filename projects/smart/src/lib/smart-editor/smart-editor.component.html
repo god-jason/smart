@@ -73,7 +73,7 @@
         }
         @case ('color') {
             <!--颜色-->
-            <nz-color-picker nzShowText [formControl]="control"></nz-color-picker>
+            <nz-color-picker nzShowText [formControl]="control" [nzAllowClear]="field.clear"></nz-color-picker>
         }
         @case ('switch') {
             <!--开关-->

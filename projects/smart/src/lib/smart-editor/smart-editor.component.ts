@@ -65,6 +65,8 @@ export interface SmartField {
     placeholder?: string
     tips?: string
 
+    clear?: boolean
+
     disabled?: boolean
     hidden?: boolean //隐藏？？？
 
