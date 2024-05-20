@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, TemplateRef} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, TemplateRef} from '@angular/core';
 import {CommonModule} from "@angular/common";
 import {
     FormArray,
@@ -180,6 +180,8 @@ function getDefault(field: SmartField): any {
     styleUrl: './smart-editor.component.scss',
 })
 export class SmartEditorComponent implements OnInit {
+    @Output() change = new EventEmitter<any>();
+
     group: FormGroup = new FormGroup({})
 
     _fields: SmartField[] = []
@@ -194,6 +196,7 @@ export class SmartEditorComponent implements OnInit {
             setTimeout(() => {
                 this._fields = fs
                 this.group = this.build(this._fields, this._values)
+                this.group.valueChanges.subscribe(res=>this.change.emit(res))
             },50)
         }
     }
@@ -209,6 +212,7 @@ export class SmartEditorComponent implements OnInit {
         if (this._fields && this._fields.length) {
             setTimeout(() => {
                 this.group = this.build(this._fields, this._values)
+                this.group.valueChanges.subscribe(res=>this.change.emit(res))
             }, 50)
         }
     }
@@ -290,8 +294,10 @@ export class SmartEditorComponent implements OnInit {
         console.log("[SmartEditor] setValue", value)
         //this.group.setValue(value)
         this._values = value
-        if (this._fields && this._fields.length)
+        if (this._fields && this._fields.length) {
             this.group = this.build(this._fields, value)
+            this.group.valueChanges.subscribe(res=>this.change.emit(res))
+        }
     }
 
     //补充数据
@@ -319,8 +325,10 @@ export class SmartEditorComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        if (this._fields && this._fields.length)
+        if (this._fields && this._fields.length) {
             this.group = this.build(this._fields, this._values)
+            this.group.valueChanges.subscribe(res=>this.change.emit(res))
+        }
     }
 
 
