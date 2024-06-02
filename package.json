@@ -1,12 +1,14 @@
 {
-    "name": "iot-master-smart",
-    "version": "0.1.2",
+    "name": "@god-jason/smart",
+    "version": "1.0.0",
     "scripts": {
         "ng": "ng",
         "start": "ng serve --port 4002",
         "build": "ng build",
         "watch": "ng build --watch --configuration development",
-        "test": "ng test"
+        "test": "ng test",
+        "prepublish": "ng build smart",
+        "pub": "npm publish dist/smart/  --access public"
     },
     "private": true,
     "dependencies": {
