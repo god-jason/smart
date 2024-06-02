@@ -1,6 +1,6 @@
 {
     "name": "@god-jason/smart",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "peerDependencies": {
         "@angular/common": "^17.2.1",
         "@angular/core": "^17.2.1",
@@ -15,6 +15,6 @@
     },
     "sideEffects": false,
     "repository": {
-        "url": "https://github.com/god-json/smart"
+        "url": "https://github.com/god-jason/smart"
     }
 }

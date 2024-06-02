@@ -3,7 +3,7 @@
 物联大师及相关项目的UI基础库
 
 ```
-npm install iot-master-smart
+npm install @god-jason/smart
 ```
 
 ## 智能表单

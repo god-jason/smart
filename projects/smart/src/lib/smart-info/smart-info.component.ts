@@ -16,7 +16,7 @@ export interface SmartInfoItem {
 }
 
 @Component({
-    selector: 'im-smart-info',
+    selector: 'smart-info',
     standalone: true,
     imports: [
         CommonModule,

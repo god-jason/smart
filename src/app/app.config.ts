@@ -39,7 +39,7 @@ import {
     ExportOutline,
     ImportOutline,
 } from '@ant-design/icons-angular/icons';
-import {API_BASE} from "../../projects/smart/src/lib/request.service";
+import {SMART_API_BASE} from "../../projects/smart/src/lib/smart-request.service";
 
 const icons: IconDefinition[] = [
     MenuFoldOutline,
@@ -78,6 +78,6 @@ export const appConfig: ApplicationConfig = {
         provideAnimations(),
         {provide: NZ_ICONS, useValue: icons},
         {provide: LOCALE_ID, useValue: "zh_CN"},
-        {provide: API_BASE, useValue: "/api/"},
+        {provide: SMART_API_BASE, useValue: "/api/"},
     ]
 };

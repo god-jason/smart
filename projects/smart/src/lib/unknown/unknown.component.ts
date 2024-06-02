@@ -6,7 +6,7 @@ import {NzResultNotFoundComponent} from "ng-zorro-antd/result/partial/not-found"
 import {NzResultComponent} from "ng-zorro-antd/result";
 
 @Component({
-    selector: 'im-unknown',
+    selector: 'god-unknown',
     standalone: true,
     imports: [
         RouterLink,

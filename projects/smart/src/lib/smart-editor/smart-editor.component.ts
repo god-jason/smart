@@ -144,7 +144,7 @@ function getDefault(field: SmartField): any {
 }
 
 @Component({
-    selector: 'im-smart-editor',
+    selector: 'smart-editor',
     standalone: true,
     imports: [
         CommonModule,
