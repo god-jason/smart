@@ -98,8 +98,6 @@ export interface SmartField {
 }
 
 function getDefault(field: SmartField): any {
-    if (field.array)
-        return []
     switch (field.type) {
         case 'text':
             return ''
@@ -141,6 +139,44 @@ function getDefault(field: SmartField): any {
             return []
     }
     return ''
+}
+
+function createControl(f: SmartField, value: any = undefined): FormControl {
+    let validators: any = [];
+
+    if (f.required)
+        validators.push(Validators.required)
+
+    if (f.min !== undefined) {
+        if (f.type === "number")
+            validators.push(Validators.min(f.min))
+        else if (f.type === "text" || f.type === "password")
+            validators.push(Validators.minLength(f.min))
+    }
+
+    if (f.max !== undefined) {
+        if (f.type === "number")
+            validators.push(Validators.max(f.max))
+        else if (f.type === "text" || f.type === "password")
+            validators.push(Validators.maxLength(f.max))
+    }
+
+    if (f.pattern && f.type === "text")
+        validators.push(Validators.pattern(f.pattern))
+
+    //拼接默认校验器
+    if (f.validators)
+        validators = validators.concat(f.validators)
+
+    //默认值
+    if (value === undefined) {
+        if (f.hasOwnProperty('default'))
+            value = f.default
+        else
+            value = getDefault(f)
+    }
+
+    return new FormControl(value, validators)
 }
 
 @Component({
@@ -191,13 +227,13 @@ export class SmartEditorComponent implements OnInit {
 
 
     @Input() set fields(fs: SmartField[]) {
-        console.log("[SmartEditor] set fields", fs)
+        //console.log("[SmartEditor] set fields", fs)
         if (fs && fs.length) {
             setTimeout(() => {
                 this._fields = fs
                 this.group = this.build(this._fields, this._values)
-                this.group.valueChanges.subscribe(res=>this.change.emit(res))
-            },50)
+                this.group.valueChanges.subscribe(res => this.change.emit(res))
+            }, 50)
         }
     }
 
@@ -207,12 +243,12 @@ export class SmartEditorComponent implements OnInit {
 
 
     @Input() set values(values: any) {
-        console.log("[SmartEditor] set values", values)
+        //console.log("[SmartEditor] set values", values)
         this._values = values
         if (this._fields && this._fields.length) {
             setTimeout(() => {
                 this.group = this.build(this._fields, this._values)
-                this.group.valueChanges.subscribe(res=>this.change.emit(res))
+                this.group.valueChanges.subscribe(res => this.change.emit(res))
             }, 50)
         }
     }
@@ -221,88 +257,51 @@ export class SmartEditorComponent implements OnInit {
         return this._values
     }
 
+    //构建表单
     build(fields: SmartField[], values: any): FormGroup {
-        console.log("[SmartEditor] build", fields, values)
+        //console.log("[SmartEditor] build", fields, values)
         values = values || {}
 
         let fs: any = {}
         fields?.forEach(f => {
-            if (f.type == 'object' && f.children) {
-                fs[f.key] = this.build(f.children, values[f.key])
-                if (f.change) fs[f.key].valueChanges.subscribe((res: any) => f.change?.(res))
-                return
-            }
-            if (f.type == 'list' && f.children) {
-                fs[f.key] = this.fb.array(values[f.key]?.map((v: any) => {
-                    return this.build(f.children || [], v)
-                }) || [])
-                if (f.change) fs[f.key].valueChanges.subscribe((res: any) => f.change?.(res))
-                return
-            }
-            if (f.type == 'table' && f.children) {
-                fs[f.key] = this.fb.array(values[f.key]?.map((v: any) => {
-                    return this.build(f.children || [], v)
-                }) || [])
-                if (f.change) fs[f.key].valueChanges.subscribe((res: any) => f.change?.(res))
-                return
+
+            switch (f.type) {
+                case 'object':
+                    fs[f.key] = this.build(f.children || [], values[f.key])
+                    break;
+                case "list":
+                case "table":
+                    fs[f.key] = this.fb.array(values[f.key]?.map((v: any) => this.build(f.children || [], v)) || [])
+                    break;
+                default:
+                    if (f.array)
+                        fs[f.key] = this.fb.array(values[f.key]?.map((v: any) => createControl(f, values[f.key])) || [])
+                    else
+                        fs[f.key] = createControl(f, values[f.key])
+                    break;
             }
 
-            let validators: any = [];
-
-            if (f.required)
-                validators.push(Validators.required)
-
-            if (f.min !== undefined) {
-                if (f.type === "number")
-                    validators.push(Validators.min(f.min))
-                else if (f.type === "text" || f.type === "password")
-                    validators.push(Validators.minLength(f.min))
-            }
-
-            if (f.max !== undefined) {
-                if (f.type === "number")
-                    validators.push(Validators.max(f.max))
-                else if (f.type === "text" || f.type === "password")
-                    validators.push(Validators.maxLength(f.max))
-            }
-
-            if (f.pattern && f.type === "text")
-                validators.push(Validators.pattern(f.pattern))
-
-            //拼接默认校验器
-            if (f.validators)
-                validators = validators.concat(f.validators)
-
-            //默认值
-            let value: any
-
-            if (values.hasOwnProperty(f.key))
-                value = values[f.key]
-            else if (f.hasOwnProperty('default'))
-                value = f.default
-            else
-                value = getDefault(f)
-
-            fs[f.key] = new FormControl(value, validators)
-            if (f.change) fs[f.key].valueChanges.subscribe((res: any) => f.change?.(res))
+            //订阅变化
+            if (f.change)
+                fs[f.key].valueChanges.subscribe((res: any) => f.change?.(res))
         })
         return this.fb.group(fs)
     }
 
     //设置数据
     setValue(value: any) {
-        console.log("[SmartEditor] setValue", value)
+        //console.log("[SmartEditor] setValue", value)
         //this.group.setValue(value)
         this._values = value
         if (this._fields && this._fields.length) {
             this.group = this.build(this._fields, value)
-            this.group.valueChanges.subscribe(res=>this.change.emit(res))
+            this.group.valueChanges.subscribe(res => this.change.emit(res))
         }
     }
 
     //补充数据
     patchValue(value: any) {
-        console.log("[SmartEditor] patchValue", value)
+        //console.log("[SmartEditor] patchValue", value)
         //setTimeout(() => this.group.patchValue(value))
         //TODO 数组类型 需要创建control
         this.group.patchValue(value)
@@ -327,7 +326,7 @@ export class SmartEditorComponent implements OnInit {
     ngOnInit(): void {
         if (this._fields && this._fields.length) {
             this.group = this.build(this._fields, this._values)
-            this.group.valueChanges.subscribe(res=>this.change.emit(res))
+            this.group.valueChanges.subscribe(res => this.change.emit(res))
         }
     }
 
@@ -350,23 +349,43 @@ export class SmartEditorComponent implements OnInit {
     }
 
 
-    drop(control: FormArray, event: CdkDragDrop<any, any>) {
-        moveItemInArray(control.controls, event.previousIndex, event.currentIndex);
+    tableDrop(array: FormArray, event: CdkDragDrop<any, any>) {
+        moveItemInArray(array.controls, event.previousIndex, event.currentIndex);
+        array.updateValueAndValidity()
     }
 
-    copy(fields: SmartField[], control: FormArray, i: number) {
-        let o = control.at(i)
-        let n = this.build(fields, o.value)
-        control.insert(i, n)
+    tableCopy(fields: SmartField[], array: FormArray, i: number) {
+        let control = array.at(i)
+        let group = this.build(fields, control.value)
+        array.insert(i, group)
     }
 
-    remove(control: FormArray, i: number) {
-        control.removeAt(i);
+    tableRemove(array: FormArray, i: number) {
+        array.removeAt(i);
     }
 
-    add(control: FormArray, fields: SmartField[]) {
-        control.push(this.build(fields, {}))
+    tableAdd(array: FormArray, fields: SmartField[]) {
+        array.push(this.build(fields, {}))
     }
 
     protected readonly Infinity = Infinity;
+
+
+    arrayAdd(array: FormArray, field: SmartField) {
+        array.push(createControl(field))
+    }
+
+    arrayDrop(array: FormArray, event: CdkDragDrop<any, any>) {
+        moveItemInArray(array.controls, event.previousIndex, event.currentIndex);
+        array.updateValueAndValidity()
+    }
+
+    arrayCopy(field: any, array: FormArray, i: number) {
+        let control = array.at(i)
+        array.insert(i, createControl(field, control.value))
+    }
+
+    arrayRemove(array: FormArray, i: number) {
+        array.removeAt(i);
+    }
 }

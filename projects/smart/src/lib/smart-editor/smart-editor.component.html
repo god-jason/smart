@@ -142,20 +142,20 @@
         }
         @case ('list') {
             <!--列表-->
-            <a title="添加" (click)="add(control, field.children)">
+            <a title="添加" (click)="tableAdd(control, field.children)">
                 <i nz-icon nzType="plus"></i>添加
             </a>
             <!--内容-->
-            <div cdkDropList (cdkDropListDropped)="drop(control, $event)">
+            <div cdkDropList (cdkDropListDropped)="tableDrop(control, $event)">
                 <div *ngFor="let c of control.controls; let i=index" cdkDrag>
                     <nz-space>
                         <a *nzSpaceItem title="排序" style="cursor:move;" cdkDragHandle>
                             <i nz-icon nzType="drag"></i>排序
                         </a>
-                        <a *nzSpaceItem title="复制" (click)="copy(field.children, control, i)">
+                        <a *nzSpaceItem title="复制" (click)="tableCopy(field.children, control, i)">
                             <i nz-icon nzType="copy"></i>复制
                         </a>
-                        <a *nzSpaceItem title="删除" (click)="remove(control, i)">
+                        <a *nzSpaceItem title="删除" (click)="tableRemove(control, i)">
                             <i nz-icon nzType="delete"></i>删除
                         </a>
                     </nz-space>
@@ -172,14 +172,14 @@
                 <tr>
                     <th *ngFor="let f of field.children;let j=index">{{ f.label }}</th>
                     <th>
-                        <a title="添加" (click)="add(control, field.children)">
+                        <a title="添加" (click)="tableAdd(control, field.children)">
                             <i nz-icon nzType="plus"></i>添加
                         </a>
                     </th>
                 </tr>
                 </thead>
                 <!--内容-->
-                <tbody cdkDropList (cdkDropListDropped)="drop(control, $event)">
+                <tbody cdkDropList (cdkDropListDropped)="tableDrop(control, $event)">
                 <tr *ngFor="let c of control.controls; let i=index" cdkDrag>
                     <td *ngFor="let f of field.children; let j=index">
                         <ng-container *ngTemplateOutlet="controlTpl; context: { field: f, control:c.get(f.key) }">
@@ -190,10 +190,10 @@
                             <a *nzSpaceItem title="排序" style="cursor:move;" cdkDragHandle>
                                 <i nz-icon nzType="drag"></i>
                             </a>
-                            <a *nzSpaceItem title="复制" (click)="copy(field.children, control, i)">
+                            <a *nzSpaceItem title="复制" (click)="tableCopy(field.children, control, i)">
                                 <i nz-icon nzType="copy"></i>
                             </a>
-                            <a *nzSpaceItem title="删除" (click)="remove(control, i)">
+                            <a *nzSpaceItem title="删除" (click)="tableRemove(control, i)">
                                 <i nz-icon nzType="delete"></i>
                             </a>
                         </nz-space>
@@ -214,6 +214,38 @@
     {{ field.tips }}
 </ng-template>
 
+
+<!-- 数组模板 -->
+<ng-template #arrayTpl let-field="field" let-array="array">
+    <a title="添加" (click)="arrayAdd(array, field)">
+        <i nz-icon nzType="plus"></i>添加
+    </a>
+
+    <nz-table nzSize="small" nzTemplateMode nzBordered>
+        <tbody cdkDropList (cdkDropListDropped)="arrayDrop(array, $event)">
+        <tr *ngFor="let c of array.controls; let i=index" cdkDrag>
+            <td>
+                <ng-container *ngTemplateOutlet="controlTpl; context: { field: field, control: c }">
+                </ng-container>
+            </td>
+            <td class="operators">
+                <nz-space>
+                    <a *nzSpaceItem title="排序" style="cursor:move;" cdkDragHandle>
+                        <i nz-icon nzType="drag"></i>
+                    </a>
+                    <a *nzSpaceItem title="复制" (click)="arrayCopy(field, array, i)">
+                        <i nz-icon nzType="copy"></i>
+                    </a>
+                    <a *nzSpaceItem title="删除" (click)="arrayRemove(array, i)">
+                        <i nz-icon nzType="delete"></i>
+                    </a>
+                </nz-space>
+            </td>
+        </tr>
+        </tbody>
+    </nz-table>
+</ng-template>
+
 <!-- 表单组模板 -->
 <ng-template #groupTpl let-fields="fields" let-group="group">
     @for (field of fields;track field) {
@@ -222,8 +254,13 @@
                 {{ field.label }}
             </nz-form-label>
             <nz-form-control [nzSm]="20" [nzXs]="24" [nzErrorTip]="errorTip">
-                <ng-container *ngTemplateOutlet="controlTpl; context: { field: field, control:group.get(field.key)}">
-                </ng-container>
+                @if (field.array) {
+                    <ng-container *ngTemplateOutlet="arrayTpl; context: { field: field, array: group.get(field.key)}">
+                    </ng-container>
+                } @else {
+                    <ng-container *ngTemplateOutlet="controlTpl; context: { field: field, control: group.get(field.key)}">
+                    </ng-container>
+                }
             </nz-form-control>
         </nz-form-item>
     }

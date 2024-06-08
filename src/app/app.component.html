@@ -1,1 +1,5 @@
-<im-smart-editor [fields]="fields"></im-smart-editor>
+<smart-editor (change)="onChange($event)" [fields]="fields" #editor></smart-editor>
+
+<p>
+    {{json}}
+</p>
