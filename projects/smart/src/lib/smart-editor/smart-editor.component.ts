@@ -275,7 +275,7 @@ export class SmartEditorComponent implements OnInit {
                     break;
                 default:
                     if (f.array)
-                        fs[f.key] = this.fb.array(values[f.key]?.map((v: any) => createControl(f, values[f.key])) || [])
+                        fs[f.key] = this.fb.array(values[f.key]?.map((v: any) => createControl(f, v)) || [])
                     else
                         fs[f.key] = createControl(f, values[f.key])
                     break;

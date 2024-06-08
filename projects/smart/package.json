@@ -1,6 +1,6 @@
 {
     "name": "@god-jason/smart",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "peerDependencies": {
         "@angular/common": "^17.2.1",
         "@angular/core": "^17.2.1",
