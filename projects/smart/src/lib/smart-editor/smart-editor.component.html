@@ -18,7 +18,7 @@
                    [maxlength]="field.max || 255"
                    [placeholder]="field.placeholder || ''"
                    [nzAutocomplete]="auto"/>
-            <nz-autocomplete [nzDataSource]="field.auth" #auto></nz-autocomplete>
+            <nz-autocomplete [nzDataSource]="field.auto" #auto></nz-autocomplete>
         }
         @case ('password') {
             <!--密码-->
@@ -249,20 +249,22 @@
 <!-- 表单组模板 -->
 <ng-template #groupTpl let-fields="fields" let-group="group">
     @for (field of fields;track field) {
-        <nz-form-item>
-            <nz-form-label *ngIf="field.label" [nzSm]="4" [nzXs]="24" [nzRequired]="field.required" [nzFor]="field.key">
-                {{ field.label }}
-            </nz-form-label>
-            <nz-form-control [nzSm]="20" [nzXs]="24" [nzErrorTip]="errorTip">
-                @if (field.array) {
-                    <ng-container *ngTemplateOutlet="arrayTpl; context: { field: field, array: group.get(field.key)}">
-                    </ng-container>
-                } @else {
-                    <ng-container *ngTemplateOutlet="controlTpl; context: { field: field, control: group.get(field.key)}">
-                    </ng-container>
-                }
-            </nz-form-control>
-        </nz-form-item>
+        @if (!field.hidden) {
+            <nz-form-item>
+                <nz-form-label *ngIf="field.label" [nzSm]="4" [nzXs]="24" [nzRequired]="field.required" [nzFor]="field.key">
+                    {{ field.label }}
+                </nz-form-label>
+                <nz-form-control [nzSm]="20" [nzXs]="24" [nzErrorTip]="errorTip">
+                    @if (field.array) {
+                        <ng-container *ngTemplateOutlet="arrayTpl; context: { field: field, array: group.get(field.key)}">
+                        </ng-container>
+                    } @else {
+                        <ng-container *ngTemplateOutlet="controlTpl; context: { field: field, control: group.get(field.key)}">
+                        </ng-container>
+                    }
+                </nz-form-control>
+            </nz-form-item>
+        }
     }
 </ng-template>
 
